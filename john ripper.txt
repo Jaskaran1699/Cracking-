@@ -1,0 +1,61 @@
+john the ripper
+                                                                                                                                                                                                                                    
+                                                                                                                                                                                    
+┌──(kali㉿kali)-[~/Desktop/Jass_software]
+└─$ ls
+Password_Protected_file.zip  protected_file
+
+================================================================================
+sudo + zip2john + filename OR path of file protected file
+=================================================================================
+
+                                                                                            
+┌──(kali㉿kali)-[~/Desktop/Jass_software]
+└─$ sudo zip2john Password_Protected_file.zip          
+[sudo] password for kali: 
+Created directory: /root/.john
+Password_Protected_file.zip/protected_file:$zip2$*0*1*0*f4e0f60a5ce70fe2*c5e6*28*eabe19469c33fde3a23edc364dbea7680218de703bcafec5e60e80d4628c67fe1fa513c1b96a428d*5aaef64c9b1b6db3e63f*$/zip2$:protected_file:Password_Protected_file.zip:Password_Protected_file.zip
+                                                                                            
+┌──(kali㉿kali)-[~/Desktop/Jass_software]
+└─$ pwd                                         
+/home/kali/Desktop/Jass_software
+                                                                                            
+                                                               
+┌──(root㉿kali)-[/home/kali/Desktop/Jass_software]
+└─# zip2john Password_Protected_file.zip > /home/kali/Desktop/ hash.txt
+zsh: is a directory: /home/kali/Desktop/
+                                            
+
+===================================================================================
+creating a hash file = name of file hash.txt
+
+
+                                                
+┌──(root㉿kali)-[/home/kali/Desktop/Jass_software]
+└─# zip2john Password_Protected_file.zip > /home/kali/Desktop/hash.txt 
+
+
+
+=======================================================================================
+john --format=zip + path of hash file            = it is used to extract password of protected file from hash file
+============================================================================================
+                                                                                            
+┌──(root㉿kali)-[/home/kali/Desktop/Jass_software]
+└─# john --format=zip /home/kali/Desktop/hash.txt
+Using default input encoding: UTF-8
+Loaded 1 password hash (ZIP, WinZip [PBKDF2-SHA1 128/128 AVX 4x])
+Cost 1 (HMAC size) is 40 for all loaded hashes
+Will run 4 OpenMP threads
+Proceeding with single, rules:Single
+Press 'q' or Ctrl-C to abort, almost any other key for status
+Almost done: Processing the remaining buffered candidate passwords, if any.
+Proceeding with wordlist:/usr/share/john/password.lst
+12345            (Password_Protected_file.zip/protected_file)     
+1g 0:00:00:04 DONE 2/3 (2024-11-11 10:12) 0.2136g/s 11048p/s 11048c/s 11048C/s 123456..Peter
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed. 
+
+
+==========================================
+I got the password 12345
+==========================================
